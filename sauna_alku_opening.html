@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAUNA ALKU｜オープニングチェックリスト</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1a18;
+    --surface: #162420;
+    --surface2: #1e2e2a;
+    --accent: #5fcfaa;
+    --accent2: #3da882;
+    --warn: #e8a84c;
+    --text: #e8f0ee;
+    --text-muted: #7a9e98;
+    --border: rgba(95,207,170,0.15);
+    --checked-bg: rgba(95,207,170,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .logo {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  h1 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .mode-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 7px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mode-btn.active {
+    background: rgba(95,207,170,0.15);
+    color: var(--accent);
+    border-color: var(--accent2);
+    font-weight: 700;
+  }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: right;
+  }
+
+  .section {
+    margin: 1rem 0.75rem 0;
+    background: var(--surface);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .section-icon {
+    font-size: 18px;
+    width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .section-count {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .task {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 1rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .task:last-child { border-bottom: none; }
+  .task:active { background: var(--surface2); }
+  .task.checked { background: var(--checked-bg); }
+
+  .check-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--text-muted);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .task.checked .check-circle {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .checkmark {
+    display: none;
+    width: 6px;
+    height: 11px;
+    border: 2px solid #0e1a18;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+  }
+  .task.checked .checkmark { display: block; }
+
+  .task-body { flex: 1; }
+  .task-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+  .task.checked .task-text {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--text-muted);
+  }
+  .task-note {
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding: 5px 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 6px;
+    border-left: 2px solid var(--accent2);
+  }
+  .task-note.warn { border-left-color: var(--warn); color: var(--warn); }
+
+  .footer {
+    margin: 1.25rem 0.75rem 0;
+    display: flex;
+    gap: 8px;
+  }
+  .reset-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+  }
+  .complete-banner {
+    margin: 1rem 0.75rem 0;
+    padding: 1rem;
+    background: rgba(95,207,170,0.12);
+    border: 1px solid var(--accent2);
+    border-radius: 12px;
+    text-align: center;
+    display: none;
+  }
+  .complete-banner p {
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .complete-banner small {
+    color: var(--text-muted);
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">SAUNA ALKU</div>
+  <h1>オープニングチェックリスト</h1>
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btn-weekday" onclick="setMode('weekday')">平日 15:00〜16:00</button>
+    <button class="mode-btn" id="btn-holiday" onclick="setMode('holiday')">祝日 9:00〜10:00</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="progress-label" id="progress-label">0 / 0 完了</div>
+  </div>
+</header>
+
+<div id="checklist"></div>
+
+<div class="complete-banner" id="complete-banner">
+  <p>✓ すべての準備が完了しました！</p>
+  <small>お客様をお迎えする準備ができています</small>
+</div>
+
+<div class="footer">
+  <button class="reset-btn" onclick="resetAll()">↺ リセット</button>
+</div>
+
+<script>
+const tasks = [
+  {
+    section: "入館・セキュリティ", icon: "🔑",
+    items: [
+      { id: 1, text: "ポストから鍵を取り出し、入口を開錠する", note: "1分以内にセコムを解除すること！", noteType: "warn" },
+      { id: 2, text: "セコムのセキュリティを解除する" }
+    ]
+  },
+  {
+    section: "電気をつける", icon: "💡",
+    items: [
+      { id: 3, text: "入口右手の電気を左から6つつける", note: "真ん中一番下（外の看板）は日中は消しておく" },
+      { id: 4, text: "事務所のセコム下の電気3つをすべてつける" },
+      { id: 5, text: "くつろぎスペース右奥の電気スイッチを左から3つつける", note: "夏場はエアコンも一緒につける（温度設定はそのまま）" }
+    ]
+  },
+  {
+    section: "🔥 サウナストーブ（最優先！）", icon: "🌡",
+    items: [
+      { id: 6, text: "ストーブまわりを清掃する", note: "熱くなる前に必ず先に拭くこと！", noteType: "warn" },
+      { id: 7, text: "サウナストーブの電源を入れる" },
+      { id: 8, text: "湧水の配管の栓を少しだけ開放する", note: "目安の線まで開ける" }
+    ]
+  },
+  {
+    section: "扇風機をつける（6台）", icon: "🌀",
+    items: [
+      { id: 9, text: "ストーブタイマー部屋（1台）・くつろぎスペース（2台）・サウナ室廊下（1台）の扇風機をつける" },
+      { id: 10, text: "洗面台の扇風機をつける", note: "夏季限定" }
+    ]
+  },
+  {
+    section: "清掃（ストーブ加熱中に実施）", icon: "🧹",
+    items: [
+      { id: 11, text: "ヘアキャッチャーの清掃" },
+      { id: 12, text: "シャワールーム・洗面台・ロッカー・受付・事務所の床をモップがけ" },
+      { id: 13, text: "同エリアに掃除機をかける" },
+      { id: 14, text: "シャワールームを清掃する", note: "シャンプー・リンス・ボディーソープ等を確認し不足分を補充" },
+      { id: 15, text: "洗面台を清掃する", note: "綿棒など不足分を補充" },
+      { id: 16, text: "トイレ掃除" }
+    ]
+  },
+  {
+    section: "サウナ室まわりの準備", icon: "🚪",
+    items: [
+      { id: 17, text: "サウナ室前の廊下にマットを敷く" },
+      { id: 18, text: "サウナ室廊下にウォータータンク・氷入りクーラーボックスを準備する" }
+    ]
+  },
+  {
+    section: "受付・レジの準備", icon: "💴",
+    items: [
+      { id: 19, text: "お客様用のお水を準備する" },
+      { id: 20, text: "レジを立ち上げる", note: "端末パスワード: 1111 ／ レジ起動: ALKU0717 ／ お金が5万円あるか確認" },
+      { id: 21, text: "ドリンク端末をつける", note: "パスワード: 1111" },
+      { id: 22, text: "レジ下のお店BGMをつける" },
+      { id: 23, text: "くつろぎスペースのプロジェクターをつける" }
+    ]
+  },
+  {
+    section: "開店10分前・最終確認", icon: "⏰",
+    items: [
+      { id: 24, text: "サウナ室内のやかんに水を汲む" },
+      { id: 25, text: "ロウリュ用のツボの水を確認し、不足していたら補充する" },
+      { id: 26, text: "アロマ水をそれぞれのサウナ室に入れる", note: "🟠 オレンジ → 沐浴の部屋用　🟢 緑 → もう1つのサウナ室用　キャップ2杯分ずつ" },
+      { id: 27, text: "入口にオブジェクトを飾る" },
+      { id: 28, text: "残り時間で気になる箇所を清掃する", note: "メッキ・蛇口の取っ手・畳（掃除機）・床（モップ）・受付タオル補充" }
+    ]
+  }
+];
+
+let checked = {};
+const totalTasks = tasks.reduce((a, s) => a + s.items.length, 0);
+
+function setMode(mode) {
+  document.getElementById('btn-weekday').classList.toggle('active', mode === 'weekday');
+  document.getElementById('btn-holiday').classList.toggle('active', mode === 'holiday');
+}
+
+function renderChecklist() {
+  const container = document.getElementById('checklist');
+  container.innerHTML = tasks.map(section => {
+    const doneInSection = section.items.filter(i => checked[i.id]).length;
+    return `
+    <div class="section">
+      <div class="section-header">
+        <span class="section-icon">${section.icon}</span>
+        <span class="section-title">${section.section}</span>
+        <span class="section-count" id="sc-${section.items[0].id}">${doneInSection}/${section.items.length}</span>
+      </div>
+      ${section.items.map(item => `
+        <div class="task ${checked[item.id] ? 'checked' : ''}" id="task-${item.id}" onclick="toggle(${item.id})">
+          <div class="check-circle"><div class="checkmark"></div></div>
+          <div class="task-body">
+            <div class="task-text">${item.text}</div>
+            ${item.note ? `<div class="task-note ${item.noteType === 'warn' ? 'warn' : ''}">${item.note}</div>` : ''}
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }).join('');
+  updateProgress();
+}
+
+function toggle(id) {
+  checked[id] = !checked[id];
+  const taskEl = document.getElementById('task-' + id);
+  taskEl.classList.toggle('checked', checked[id]);
+  updateProgress();
+  updateSectionCounts();
+}
+
+function updateSectionCounts() {
+  tasks.forEach(section => {
+    const done = section.items.filter(i => checked[i.id]).length;
+    const el = document.getElementById('sc-' + section.items[0].id);
+    if (el) el.textContent = done + '/' + section.items.length;
+  });
+}
+
+function updateProgress() {
+  const done = Object.values(checked).filter(Boolean).length;
+  const pct = Math.round(done / totalTasks * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = done + ' / ' + totalTasks + ' 完了';
+  document.getElementById('complete-banner').style.display = done === totalTasks ? 'block' : 'none';
+}
+
+function resetAll() {
+  if (!confirm('チェックをすべてリセットしますか？')) return;
+  checked = {};
+  renderChecklist();
+}
+
+renderChecklist();
+</script>
+</body>
+</html>
