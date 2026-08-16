@@ -62,18 +62,24 @@ def find_best_segment(path: str, duration: float) -> float:
     return float(min(best_start_sec, total_duration - duration))
 
 
-def load_segment(path: str, start: float, duration: float) -> AudioSegment:
+def load_segment(path: str, start: float, duration: float, peak_target_db: float | None = None) -> AudioSegment:
     audio = AudioSegment.from_file(path)
     start_ms = int(start * 1000)
     end_ms = int((start + duration) * 1000)
-    return audio[start_ms:end_ms]
+    segment = audio[start_ms:end_ms]
+    if peak_target_db is not None:
+        # 曲ごとにマスタリングの音圧が違うため、ピークを揃えてから繋ぐ。
+        # これをやらないと (1) 曲間で音量がガクッと変わる (2) クロスフェード中に
+        # 2曲が重なって0dBFSを超え、クリッピング(音割れ)することがある。
+        segment = segment.apply_gain(peak_target_db - segment.max_dBFS)
+    return segment
 
 
 def build_config_from_tracks(tracks: list[str], duration: float) -> list[dict]:
     return [{"path": t, "duration": duration} for t in tracks]
 
 
-def stitch(config: list[dict], crossfade_ms: int) -> AudioSegment:
+def stitch(config: list[dict], crossfade_ms: int, peak_target_db: float | None = None) -> AudioSegment:
     result = None
     for entry in config:
         path = entry["path"]
@@ -86,7 +92,7 @@ def stitch(config: list[dict], crossfade_ms: int) -> AudioSegment:
             start = float(start)
             print(f"  [manual] {Path(path).name}: {start:.1f}s から {duration:.1f}秒を使用")
 
-        segment = load_segment(path, start, duration)
+        segment = load_segment(path, start, duration, peak_target_db)
         if result is None:
             result = segment
         else:
@@ -99,7 +105,9 @@ def main():
     parser.add_argument("--tracks", nargs="+", help="シンプルモード: BGM候補曲のパスを順番に指定")
     parser.add_argument("--duration", type=float, default=20.0, help="シンプルモード: 各曲から抜き出す秒数（デフォルト20秒）")
     parser.add_argument("--config", help="configモード: 曲ごとのstart/durationをJSONファイルで指定")
-    parser.add_argument("--crossfade", type=int, default=1500, help="曲間のクロスフェード時間(ms)。デフォルト1500")
+    parser.add_argument("--crossfade", type=int, default=200, help="曲間のクロスフェード時間(ms)。デフォルト200（短めのハードカット寄り）")
+    parser.add_argument("--peak-normalize-db", type=float, default=-3.0, help="各セグメントのピーク音量をこの値(dBFS)に揃えてから繋ぐ。曲間の音量ジャンプとクロスフェード時のクリッピングを防ぐ。無効化するには --no-normalize を指定")
+    parser.add_argument("--no-normalize", action="store_true", help="ピーク音量の正規化を行わない")
     parser.add_argument("--output", required=True, help="出力ファイルパス（例: out/junc_bgm_v1.mp3）")
     args = parser.parse_args()
 
@@ -116,8 +124,9 @@ def main():
         if not Path(entry["path"]).exists():
             sys.exit(f"エラー: ファイルが見つかりません: {entry['path']}")
 
+    peak_target = None if args.no_normalize else args.peak_normalize_db
     print(f"{len(config)}曲から抜き出して結合します...")
-    result = stitch(config, args.crossfade)
+    result = stitch(config, args.crossfade, peak_target)
 
     out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
