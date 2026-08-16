@@ -36,9 +36,12 @@
 
 ## 現状のステータス
 
-- [ ] BGM候補曲を `assets/bgm_candidates/` に配置
+- [x] BGM候補曲を `assets/bgm_candidates/` に配置（5曲、いずれもArtlist.io、動画利用ライセンス済み）
+- [x] `scripts/bgm_stitch.py` で候補曲から1本のBGMラフを作成（`config/bgm_plan_v1.json`、30秒版）
+      構成: Arena Drive（冒頭のビルドアップ）→ Late Night Dreams（映画的な厚み）→
+      The Brotherhood（中盤ピークを締めの一撃として使用）
+- [ ] v1をRYO氏に共有してフィードバックをもらう
 - [ ] 各社AIサービスのAPIキーを取得し `.env` に設定（`.env.example` をコピーして使う）
-- [ ] `scripts/bgm_stitch.py` で候補曲から1本のBGMラフを作成し、RYO氏に共有
 - [ ] 実写素材（交差点俯瞰、講演会の様子など）を収集
 - [ ] `scripts/generate_media.py` で画像/動画のバリエーションを量産し、イメージを固める
 - [ ] DaVinci Resolveで最終編集・緩急調整

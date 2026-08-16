@@ -1,0 +1,20 @@
+[
+  {
+    "path": "assets/bgm_candidates/candidate1.mp3",
+    "start": 14.0,
+    "duration": 12.0,
+    "note": "Arena Drive - 冒頭の盛り上がっていくビルドアップ部分"
+  },
+  {
+    "path": "assets/bgm_candidates/candidate5.mp3",
+    "start": 14.0,
+    "duration": 12.0,
+    "note": "Late Night Dreams - 映画的で厚みのある持続部分"
+  },
+  {
+    "path": "assets/bgm_candidates/candidate4.mp3",
+    "start": 68.0,
+    "duration": 8.0,
+    "note": "The Brotherhood - 中盤の鋭いピーク、締めの一撃"
+  }
+]
