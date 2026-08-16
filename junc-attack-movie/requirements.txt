@@ -1,0 +1,6 @@
+librosa==0.10.2.post1
+pydub==0.25.1
+soundfile==0.12.1
+numpy==1.26.4
+requests==2.32.3
+python-dotenv==1.0.1

@@ -1,0 +1,69 @@
+{
+  "_readme": "AI生成モデルのレジストリ。generate_media.py はここに登録されたモデルを読んで呼び出す。base_url / api_key_env は契約したサービスに合わせて自分で埋めること（未確定のURLをAIが勝手に埋めることはしていない）。単一のゲートウェイ型サービスと契約する場合は unified_gateway だけ埋めれば全モデルをそこ経由で使える構成にできる。",
+
+  "unified_gateway": {
+    "enabled": false,
+    "base_url": "",
+    "api_key_env": "GATEWAY_API_KEY",
+    "notes": "複数プロバイダーのモデルを1つのAPIキーで横断利用できるゲートウェイと契約した場合はここに base_url を設定し、enabled を true にする。個別プロバイダー側の base_url は空のままでよい。"
+  },
+
+  "models": [
+    {
+      "id": "minimax-video",
+      "type": "video",
+      "provider": "minimax",
+      "base_url": "",
+      "api_key_env": "MINIMAX_API_KEY",
+      "notes": "会議で言及されたミニマックス動画モデル。エンドポイント/リクエスト仕様は契約後にドキュメントを確認して埋める。"
+    },
+    {
+      "id": "kling-video",
+      "type": "video",
+      "provider": "kling",
+      "base_url": "",
+      "api_key_env": "KLING_API_KEY",
+      "notes": "Kling動画モデル。"
+    },
+    {
+      "id": "veo-video",
+      "type": "video",
+      "provider": "google",
+      "base_url": "",
+      "api_key_env": "GOOGLE_API_KEY",
+      "notes": "Google Veo動画モデル。"
+    },
+    {
+      "id": "sora-video",
+      "type": "video",
+      "provider": "openai",
+      "base_url": "",
+      "api_key_env": "OPENAI_API_KEY",
+      "notes": "OpenAI Sora動画モデル。"
+    },
+    {
+      "id": "nano-banana-image",
+      "type": "image",
+      "provider": "google",
+      "base_url": "",
+      "api_key_env": "GOOGLE_API_KEY",
+      "notes": "Google 画像生成モデル（会議中の通称『バナナ』）。"
+    },
+    {
+      "id": "gpt-image",
+      "type": "image",
+      "provider": "openai",
+      "base_url": "",
+      "api_key_env": "OPENAI_API_KEY",
+      "notes": "OpenAI 画像生成モデル。"
+    },
+    {
+      "id": "suno-music",
+      "type": "music",
+      "provider": "suno",
+      "base_url": "",
+      "api_key_env": "SUNO_API_KEY",
+      "notes": "音楽生成モデル（BGM候補の追加生成に使う場合）。"
+    }
+  ]
+}
